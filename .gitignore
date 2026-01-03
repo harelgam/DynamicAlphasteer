@@ -1,0 +1,14 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+
+# Ignore everything inside these folders
+data/steering_matrix/*
+data/embeddings/*
+
+# Keep the folders themselves (add a .gitkeep)
+!data/steering_matrix/.gitkeep
+!data/embeddings/.gitkeep
