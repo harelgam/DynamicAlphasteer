@@ -2,6 +2,7 @@ from transformers import LlamaConfig
 from transformers import LlamaForCausalLM
 from AlphaSteerModel import *
 from NaiveSteerModel import *
+from DynamicAlphaSteerModel import DynamicAlphaLlamaForCausalLM
 
 import sys
 import os
