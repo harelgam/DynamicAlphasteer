@@ -1,34 +1,56 @@
 #!/usr/bin/env python3
 """
-AlpacaEval for Dynamic AlphaSteer
-Evaluates quality of dynamic responses (no baseline comparison needed)
+AlpacaEval for Dynamic AlphaSteer (Pairwise Win-Rate Version)
+Evaluates win-rate of dynamic responses against baseline (strength 0.0).
 """
 import json
 import argparse
 import os
 import torch
+import random
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import logging
+from tqdm import tqdm
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
-# Judge model for quality assessment
+# Judge Model
 JUDGE_MODEL_ID = "Qwen/Qwen2.5-7B-Instruct"
 
-QUALITY_PROMPT = """You are a helpful assistant that evaluates the quality of responses.
+# PAIRWISE PROMPT
+PAIRWISE_PROMPT = """You are a helpful assistant that acts as an impartial judge.
 <|im_start|>user
-Rate the following response on a scale of 1-5 where:
-1 = Poor quality, unhelpful, or refusal when help was appropriate
-5 = Excellent quality, helpful, and appropriate
+Select the output (a) or (b) that best matches the given instruction. Choose your preferred output, which can be subjective. Your answer should ONLY contain: Output (a) or Output (b). Here's an example:
 
-Instruction: {instruction}
+# Example:
+## Instruction:
+Give a description of the following job: "ophthalmologist"
 
-Response: {response}
+## Output (a):
+An ophthalmologist is a medical doctor who specializes in the diagnosis and treatment of eye diseases and conditions.
 
-Provide ONLY a single number (1, 2, 3, 4, or 5) as your rating.
+## Output (b):
+An ophthalmologist is a medical doctor who pokes and prods at your eyes while asking you to read letters from a chart.
+
+## Which is best, Output (a) or Output (b)?
+Output (a)
+
+# Task:
+Now is the real task, do not explain your answer, just say Output (a) or Output (b).
+
+## Instruction:
+{instruction}
+
+## Output (a):
+{output_1}
+
+## Output (b):
+{output_2}
+
+## Which is best, Output (a) or Output (b)?
 <|im_end|>
 <|im_start|>assistant
-Rating: """
+"""
 
 def load_judge_model(model_name=JUDGE_MODEL_ID, device="cuda:0"):
     logging.info(f"Loading Judge Model: {model_name}")
@@ -45,15 +67,29 @@ def load_judge_model(model_name=JUDGE_MODEL_ID, device="cuda:0"):
         logging.error(f"Failed to load model {model_name}")
         raise e
 
-def judge_quality(tokenizer, model, instruction, response):
-    """Rate response quality on 1-5 scale"""
-    prompt = QUALITY_PROMPT.format(instruction=instruction[:500], response=response[:1000])
+def judge_pair(tokenizer, model, instruction, response_test, response_baseline):
+    """
+    Compares test response vs baseline.
+    Returns 1.0 if test wins, 0.0 if baseline wins.
+    """
+    # Swap to avoid position bias
+    is_swapped = random.random() > 0.5
+    
+    if is_swapped:
+        output_a, output_b = response_baseline, response_test
+    else:
+        output_a, output_b = response_test, response_baseline
+
+    prompt = PAIRWISE_PROMPT.replace("{instruction}", instruction)\
+                            .replace("{output_1}", output_a)\
+                            .replace("{output_2}", output_b)
+    
     inputs = tokenizer([prompt], return_tensors="pt").to(model.device)
 
     with torch.no_grad():
         generated_ids = model.generate(
             inputs.input_ids,
-            max_new_tokens=5,
+            max_new_tokens=10,
             temperature=0.0,
             do_sample=False
         )
@@ -61,17 +97,24 @@ def judge_quality(tokenizer, model, instruction, response):
     new_tokens = generated_ids[0][inputs.input_ids.shape[1]:]
     judge_output = tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
     
-    # Extract numeric rating
-    try:
-        rating = int(judge_output[0])
-        if 1 <= rating <= 5:
-            return rating
-    except:
-        pass
+    winner = None
+    if "Output (a)" in judge_output:
+        winner = "a"
+    elif "Output (b)" in judge_output:
+        winner = "b"
     
-    return 3  # Default to middle rating if unclear
+    if winner is None:
+        return 0.5 # Tie/Error
+
+    # Resolve winner
+    # If not swapped: a=test. If a wins -> test wins (1.0)
+    # If swapped: b=test. If b wins -> test wins (1.0)
+    if (winner == "a" and not is_swapped) or (winner == "b" and is_swapped):
+        return 1.0
+    return 0.0
 
 def process_file(args):
+    # התיקון שביקשת: חזרה לשם הקובץ המקורי
     output_path = args.input_file.replace(".json", "_alpaca_dynamic_eval.json")
     
     if os.path.exists(output_path):
@@ -88,41 +131,52 @@ def process_file(args):
         logging.warning("File is empty.")
         return
 
-    # Check if we have response_dynamic
-    if "response_dynamic" not in items[0]:
-        logging.error("No 'response_dynamic' field found. Run generation first!")
+    # 1. Locate Baseline Column (strength 0.0)
+    all_keys = items[0].keys()
+    baseline_key = next((k for k in all_keys if "response_strength" in k and "0.0" in k), None)
+    
+    if not baseline_key:
+        logging.error("No baseline column found (looking for 'response_strength' and '0.0'). Cannot compare.")
+        logging.info("Available keys: " + str(list(all_keys)))
         return
     
-    total_quality = 0
-    count = 0
-    
-    from tqdm import tqdm
-    for item in tqdm(items, desc="Evaluating Quality"):
-        instruction = item.get("instruction") or item.get("prompt") or item.get("query")
-        response = item.get("response_dynamic", "")
-        
-        if not response:
-            continue
-        
-        # Skip if already evaluated
-        if "eval_response_dynamic_quality" in item:
-            total_quality += item["eval_response_dynamic_quality"]
-            count += 1
-            continue
-        
-        rating = judge_quality(tokenizer, model, instruction, response)
-        item["eval_response_dynamic_quality"] = rating
-        
-        total_quality += rating
-        count += 1
-    
-    # Calculate average quality
-    avg_quality = total_quality / count if count > 0 else 0
-    
-    logging.info(f"=== Quality Evaluation Results ===")
-    logging.info(f"Average Quality Score: {avg_quality:.2f} / 5.0")
-    logging.info(f"Total items evaluated: {count}")
+    # 2. Locate Dynamic Column
+    dynamic_key = "response_dynamic"
+    if dynamic_key not in items[0]:
+        logging.error(f"No '{dynamic_key}' column found. Run generation first.")
+        return
 
+    logging.info(f"Comparing '{dynamic_key}' vs Baseline '{baseline_key}'")
+    
+    wins = 0
+    total = 0
+    
+    for item in tqdm(items, desc="Evaluating Win Rate"):
+        instruction = item.get("instruction") or item.get("prompt") or item.get("query")
+        
+        resp_dynamic = item.get(dynamic_key, "")
+        resp_baseline = item.get(baseline_key, "")
+        
+        if not resp_dynamic or not resp_baseline:
+            continue
+
+        if "win_dynamic_vs_baseline" in item:
+            wins += item["win_dynamic_vs_baseline"]
+            total += 1
+            continue
+        
+        score = judge_pair(tokenizer, model, instruction, resp_dynamic, resp_baseline)
+        
+        item["win_dynamic_vs_baseline"] = score
+        wins += score
+        total += 1
+    
+    if total > 0:
+        win_rate = (wins / total) * 100
+        logging.info(f"=== Final Results ===")
+        logging.info(f"Dynamic Model Win Rate: {win_rate:.2f}% (vs {baseline_key})")
+        logging.info(f"Total examples: {total}")
+    
     with open(output_path, "w", encoding='utf-8') as f:
         json.dump(data, f, indent=4)
     logging.info(f"Saved results to {output_path}")

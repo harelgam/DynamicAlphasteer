@@ -79,7 +79,7 @@ def process_file(args):
     
     for item in tqdm(items, desc=f"Judging {os.path.basename(args.input_file)}"):
         for key in list(item.keys()):
-            if "response_strength" in key and "eval" not in key:
+            if "response" in key and "eval" not in key:
                 eval_key = f"eval_{key}"
                 if eval_key in item: continue 
                 
