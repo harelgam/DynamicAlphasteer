@@ -15,7 +15,7 @@ for model in "${attack_files[@]}"; do
     if [ -f "$FILE" ]; then
         echo ">>> Evaluating Safety for: $model"
         # שימוש בטוקן מהסביבה באופן אוטומטי
-        python evaluation/jailbreak_llamaguard.py --input-file "$FILE"
+        python evaluation/jailbreak_llamaguard.py --input-file "$FILE" --max-model-len 4096
     else
         echo "WARNING: File not found: $FILE"
     fi
