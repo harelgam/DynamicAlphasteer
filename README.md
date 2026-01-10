@@ -57,21 +57,17 @@ AlphaSteer:
 | **Average Utility** | **Score** | **66.1%** | **66.5%** | **67.5%** |
 
 ## 🛠️ Installation
-
 1. Clone the repository
+
 ```bash
-git clone [https://github.com/harelgam/DynamicAlphaSteer.git](https://github.com/harelgam/DynamicAlphaSteer.git)
+git clone https://github.com/harelgam/DynamicAlphaSteer.git
 cd DynamicAlphaSteer
 
-2. Create a virtual environment
 conda create -n dynamic_steer python=3.10
 conda activate dynamic_steer
 pip install -r requirements.txt
 
-3. Environment Setup
 export HF_TOKEN="your_hf_token_here"
-
-``` 
 
 ## 🏃‍♂️ Usage Guide
 The pipeline consists of three main stages: Preprocessing, Training, and Inference.
