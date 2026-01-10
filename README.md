@@ -57,9 +57,10 @@ AlphaSteer:
 | **Average Utility** | **Score** | **66.1%** | **66.5%** | **67.5%** |
 
 ## 🛠️ Installation
+```
 1. Clone the repository
 
-```bash
+bash
 git clone https://github.com/harelgam/DynamicAlphaSteer.git
 cd DynamicAlphaSteer
 
@@ -69,6 +70,7 @@ pip install -r requirements.txt
 
 export HF_TOKEN="your_hf_token_here"
 
+```
 ## 🏃‍♂️ Usage Guide
 The pipeline consists of three main stages: Preprocessing, Training, and Inference.
 
