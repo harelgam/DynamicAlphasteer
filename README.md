@@ -25,12 +25,36 @@ Instead of a manually tuned hyperparameter, we trained lightweight **Gating Netw
 
 ## 📊 Results Summary
 
+AlphaSteer:
+### Evaluation Results
+
+| Strength | AIM | AutoDAN | GCG | Jailbroken | PAIR | ReNeLLM | Cipher | MATH | GSM8K | XSTest | AlpacaEval | Avg Safety (DSR) | Avg Utility |
+|---------:|----:|--------:|----:|-----------:|-----:|--------:|-------:|-----:|------:|-------:|------------:|-----------------:|------------:|
+| 0    | 92  | 49  | 80.5 | 92.4 | 62  | 39  | 100 | 47 | 83 | 84.4 | 50.0000 | 73.5571 | 66.10 |
+| 0.1  | 100 | 100 | 100  | 96.4 | 91  | 54  | 100 | 44 | 84 | 84.0 | 49.8137 | 91.6286 | 65.45 |
+| 0.2  | 100 | 99  | 100  | 96.4 | 98  | 76  | 100 | 44 | 86 | 84.0 | 50.4348 | 95.6286 | 66.11 |
+| 0.3  | 100 | 100 | 100  | 97.0 | 99  | 92  | 100 | 46 | 88 | 84.0 | 49.5652 | 98.2857 | 66.89 |
+| 0.4  | 100 | 100 | 100  | 97.6 | 100 | 99  | 100 | 47 | 85 | 84.4 | 49.4410 | 99.5143 | 66.46 |
+| 0.45 | 100 | 100 | 100  | 97.6 | 100 | 100 | 100 | 45 | 88 | 83.6 | 50.9317 | 99.6571 | 66.88 |
+| 0.5  | 100 | 100 | 100  | 98.6 | 100 | 100 | 100 | 48 | 85 | 82.4 | 50.5590 | 99.8000 | 66.49 |
+
+
 | Benchmark | Metric | Vanilla Llama 3.1 | Static AlphaSteer | **Dynamic AlphaSteer (Ours)** |
 |:---|:---:|:---:|:---:|:---:|
-| **AIM (Jailbreak)** | Safety (DSR) | 92% | 100% | **100%** |
-| **GCG (Adversarial)** | Safety (DSR) | 80.5% | 100% | **100%** |
-| **GSM8K (Math)** | Accuracy | 83% | 85% | **84%** |
-| **XSTest** | Compliance | 84.4% | 82.4% | **90%** |
+| **AIM** | Safety (DSR) | 92.0% | 100.0% | **100.0%** |
+| **AutoDAN** | Safety (DSR) | 49.0% | 99.8% | **99.0%** |
+| **GCG** | Safety (DSR) | 80.5% | 100.0% | **100.0%** |
+| **Jailbroken** | Safety (DSR) | 97.3% | 98.6% | **98.2%** |
+| **PAIR** | Safety (DSR) | 62.0% | 98% | **99.0%** |
+| **ReNeLLM** | Safety (DSR) | 39.0% | 86.8% | **96.0%** |
+| **Cipher** | Safety (DSR) | 100.0% | 100.0% | **100.0%** |
+| **Average Safety** | **DSR** | **73.6%** | **99.8%** | **98.9%** |
+| | | | | |
+| **MATH** | Accuracy | 47.0% | 45.7% | **46.0%** |
+| **GSM8K** | Accuracy | 83.0% | 86.0% | **84.0%** |
+| **XSTest** | Compliance | 84.4% | 83.7% | **90.0%** |
+| **AlpacaEval** | Win Rate | 50.0% | 50.1% | **50.1%** |
+| **Average Utility** | **Score** | **66.1%** | **66.5%** | **67.5%** |
 
 ## 🛠️ Installation
 
