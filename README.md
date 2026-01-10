@@ -76,6 +76,8 @@ export HF_TOKEN="your_hf_token_here"
 ## 🏃‍♂️ Usage Guide
 The pipeline consists of three main stages: Preprocessing, Training, and Inference.
 
+``` 
+
 Step 1: Preprocessing & Vector Extraction
 Extract internal activations from the training datasets (benign and harmful) and calculate the refusal vectors and null-space projection matrices.
 # 1. Extract embeddings from the datasets
