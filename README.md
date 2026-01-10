@@ -27,10 +27,10 @@ Instead of a manually tuned hyperparameter, we trained lightweight **Gating Netw
 
 | Benchmark | Metric | Vanilla Llama 3.1 | Static AlphaSteer | **Dynamic AlphaSteer (Ours)** |
 |:---|:---:|:---:|:---:|:---:|
-| **AIM (Jailbreak)** | Safety (DSR) | ~50% | 100% | **100%** |
-| **GCG (Adversarial)** | Safety (DSR) | 0% | 98% | **100%** |
-| **GSM8K (Math)** | Accuracy | 85% | ~75% | **84%** |
-| **XSTest** | Compliance | 92% | ~60% | **90%** |
+| **AIM (Jailbreak)** | Safety (DSR) | 92% | 100% | **100%** |
+| **GCG (Adversarial)** | Safety (DSR) | 80.5% | 100% | **100%** |
+| **GSM8K (Math)** | Accuracy | 83% | 85% | **84%** |
+| **XSTest** | Compliance | 84.4% | 82.4% | **90%** |
 
 ## 🛠️ Installation
 
