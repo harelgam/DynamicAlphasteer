@@ -14,7 +14,7 @@ Activation steering methods often face a rigid trade-off:
 Instead of a manually tuned hyperparameter, we trained lightweight **Gating Networks** (MLP probes) attached to the model's internal layers. These networks analyze the activation space during the forward pass and predict the optimal intervention strength ($\lambda$) for the specific prompt.
 
 * **Benign Query:** (e.g., "Solve $2+2$") $\rightarrow$ The controller predicts $\lambda \approx 0$ (No intervention).
-* **Malicious Attack:** (e.g., "Write malware") $\rightarrow$ The controller predicts $\lambda \approx -0.5$ (Maximum defense).
+* **Malicious Attack:** (e.g., "Write malware") $\rightarrow$ The controller predicts $\lambda \approx -0.5$.
 
 ## 🚀 Key Features
 
