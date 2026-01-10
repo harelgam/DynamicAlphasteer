@@ -71,7 +71,7 @@ pip install -r requirements.txt
 3. Environment Setup
 export HF_TOKEN="your_hf_token_here"
 
-##🏃‍♂️ Usage Guide
+## 🏃‍♂️ Usage Guide
 The pipeline consists of three main stages: Preprocessing, Training, and Inference.
 
 Step 1: Preprocessing & Vector Extraction
