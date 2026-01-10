@@ -71,7 +71,7 @@ pip install -r requirements.txt
 3. Environment Setup
 export HF_TOKEN="your_hf_token_here"
 
-
+``` 
 
 ## 🏃‍♂️ Usage Guide
 The pipeline consists of three main stages: Preprocessing, Training, and Inference.
@@ -95,8 +95,6 @@ Step 3: Inference & Evaluation
 Run the model with the dynamic mechanism enabled across various benchmarks (Safety and Utility).
 # Run full evaluation suite (AIM, GCG, GSM8K, AlpacaEval, etc.)
 bash scripts/run_all_evals.sh
-
----
 
 📂 Project Structure
 src/AlphaSteerModel: Implementation of the original static AlphaSteer logic.
