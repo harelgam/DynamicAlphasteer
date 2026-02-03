@@ -4,9 +4,16 @@
   <img src="tradeoff_dynamic.png" alt="Tradeoff Dynamic Graph" width="800">
 </p>
 
+<div align="center">
+
+**AlphaSteer:** $$\mathbf{h}' = \mathbf{h} + \lambda \cdot \Delta \mathbf{h}$$ |
+**DynamicAlphaSteer:** $$\mathbf{h}' = \mathbf{h} + \lambda(x) \cdot \Delta \mathbf{h}$$ |
+
+</div>
+
 **Dynamic AlphaSteer** is an advanced extension of the **AlphaSteer** activation steering framework. While the original method relies on a fixed steering coefficient ($\lambda$), this project introduces a **Dynamic Gating Network** that learns to modulate the steering intensity in real-time based on the input's semantic content.
 
-Built upon **Llama-3.1-8B-Instruct**, this architecture effectively resolves the safety-utility trade-off, achieving defense against jailbreaks (AIM, GCG) while preserving the model's reasoning capabilities (GSM8K, Math).
+Built upon **Llama-3.1-8B-Instruct**, this architecture strive to resolves the safety-utility trade-off, achieving defense against jailbreaks (AIM, GCG) while preserving the model's reasoning capabilities (GSM8K, Math).
 
 ## 🧠 The Core Concept
 
@@ -20,12 +27,7 @@ Instead of a manually tuned hyperparameter, we trained lightweight **Gating Netw
 * **Benign Query:** (e.g., "Solve $2+2$") $\rightarrow$ The controller predicts $\lambda \approx 0$ (No intervention).
 * **Malicious Attack:** (e.g., "Write malware") $\rightarrow$ The controller predicts $\lambda \approx -0.5$.
 
-## 🚀 Key Features
 
-* **Adaptive Modulation:** Input-dependent steering strength that adjusts automatically to the prompt's intent.
-* **Null-Space Constraint:** Leverages the projection method from the original AlphaSteer to ensure zero interference on perfectly safe prompts.
-* **High Performance:** Achieves **100% defense rate** on AIM and GCG attacks, while maintaining **84% accuracy** on GSM8K (comparable to the vanilla model).
-* **Efficiency:** Requires only a single forward pass during generation, unlike multi-pass sampling methods.
 
 ## 📊 Results Summary
 
