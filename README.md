@@ -3,6 +3,7 @@
 <p align="center">
   <img src="tradeoff_dynamic.png" alt="Tradeoff Dynamic Graph" width="800">
 </p>
+
 **Dynamic AlphaSteer** is an advanced extension of the **AlphaSteer** activation steering framework. While the original method relies on a fixed steering coefficient ($\lambda$), this project introduces a **Dynamic Gating Network** that learns to modulate the steering intensity in real-time based on the input's semantic content.
 
 Built upon **Llama-3.1-8B-Instruct**, this architecture effectively resolves the safety-utility trade-off, achieving defense against jailbreaks (AIM, GCG) while preserving the model's reasoning capabilities (GSM8K, Math).
