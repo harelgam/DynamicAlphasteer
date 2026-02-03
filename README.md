@@ -6,8 +6,9 @@
 
 <div align="center">
 
-**AlphaSteer:** $$\mathbf{h}' = \mathbf{h} + \lambda \cdot \Delta \mathbf{h}$$ |
-**DynamicAlphaSteer:** $$\mathbf{h}' = \mathbf{h} + \lambda(x) \cdot \Delta \mathbf{h}$$ |
+**AlphaSteer:** $$\mathbf{h}' = \mathbf{h} + \lambda \cdot \Delta \mathbf{h}$$ 
+
+**DynamicAlphaSteer:** $$\mathbf{h}' = \mathbf{h} + \lambda(x) \cdot \Delta \mathbf{h}$$ 
 
 </div>
 
